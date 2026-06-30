@@ -64,7 +64,9 @@
     "currentShoe": "Selected shoe",
     "currentPain": "Your pain profile",
     "noPain": "No pain description yet",
-    "socialRank": "{{count}} matching social signals"
+    "socialRank": "{{count}} matching social signals",
+    "suggestionsEmpty": "No similar fits from other users yet. Add your pain profile and mark perfect-fit shoes to help the community.",
+    "suggestionsError": "Could not load community suggestions."
   },
   "profile": {
     "title": "My profile",

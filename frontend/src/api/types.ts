@@ -67,3 +67,17 @@ export type UpdateProfileResponse = {
   fitProfileId: string
 }
 
+export type SocialSuggestion = {
+  brand: string
+  model: string
+  size: string
+  fitScore: number
+  fitLabel: string
+  imageUrl?: string
+  socialCount: number
+}
+
+export type SocialSuggestionsResponse = {
+  suggestions: SocialSuggestion[]
+}
+

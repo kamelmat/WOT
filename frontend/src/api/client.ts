@@ -6,6 +6,7 @@ import type {
   RecommendationsResponse,
   ValidateFitRequest,
   ValidateFitResponse,
+  SocialSuggestionsResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
 } from './types'
@@ -140,5 +141,11 @@ export const fitApi = {
         method: 'PUT',
         body: JSON.stringify(body),
       },
+    ),
+
+  socialSuggestions: (pain: string) =>
+    requestJson<SocialSuggestionsResponse>(
+      `/api/v1/fit/social/suggestions?pain=${encodeURIComponent(pain)}`,
+      { method: 'GET' },
     ),
 }

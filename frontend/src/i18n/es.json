@@ -64,7 +64,9 @@
     "currentShoe": "Zapato seleccionado",
     "currentPain": "Tu perfil de dolor",
     "noPain": "Sin descripción de dolor",
-    "socialRank": "{{count}} señales sociales coincidentes"
+    "socialRank": "{{count}} señales sociales coincidentes",
+    "suggestionsEmpty": "Aún no hay calces similares de otros usuarios. Agrega tu dolor y marca zapatos perfectos para ayudar a la comunidad.",
+    "suggestionsError": "No se pudieron cargar las sugerencias de la comunidad."
   },
   "profile": {
     "title": "Mi perfil",

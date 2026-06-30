@@ -1,9 +1,11 @@
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import {
+  Alert,
   AppBar,
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Dialog,
   DialogContent,
@@ -12,11 +14,15 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { fitApi } from '../api/client'
+import { resolveApiUrl } from '../api/resolveApiUrl'
 import { ShoeCard, type ShoeCardModel } from '../components/ShoeCard'
-import { rankSuggestionsByPain } from '../mock/socialSuggestions'
+import { matchImage } from '../mock/imageMatch'
 import { loadUserProfile } from '../state/persist'
+
+type SocialShoe = ShoeCardModel & { socialCount: number }
 
 export function FavoritesPage({
   favorites,
@@ -28,9 +34,40 @@ export function FavoritesPage({
   const { t } = useTranslation()
   const [openSuggestions, setOpenSuggestions] = useState(false)
   const [selectedShoe, setSelectedShoe] = useState<ShoeCardModel | null>(null)
+  const [suggestions, setSuggestions] = useState<SocialShoe[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+  const [suggestionsError, setSuggestionsError] = useState<string | null>(null)
   const profile = useMemo(() => loadUserProfile(), [])
-  const selectedPain = selectedShoe?.blurb?.trim() || profile.pain || ''
-  const suggestions = useMemo(() => rankSuggestionsByPain(selectedPain), [selectedPain])
+  const selectedPain = useMemo(() => {
+    const parts = [profile.pain, selectedShoe?.blurb].filter(Boolean)
+    return parts.join(' ').trim()
+  }, [profile.pain, selectedShoe?.blurb])
+
+  useEffect(() => {
+    if (!openSuggestions) return
+    setLoadingSuggestions(true)
+    setSuggestionsError(null)
+    void fitApi
+      .socialSuggestions(selectedPain)
+      .then((res) => {
+        setSuggestions(
+          res.suggestions.map((s) => ({
+            brand: s.brand,
+            model: s.model,
+            size: s.size,
+            fitScore: s.fitScore,
+            fitLabel: s.fitLabel,
+            imageUrl: resolveApiUrl(s.imageUrl) ?? matchImage(s.brand, s.model),
+            socialCount: s.socialCount,
+          })),
+        )
+      })
+      .catch((e) => {
+        setSuggestions([])
+        setSuggestionsError(e instanceof Error ? e.message : t('favorites.suggestionsError'))
+      })
+      .finally(() => setLoadingSuggestions(false))
+  }, [openSuggestions, selectedPain, t])
 
   return (
     <>
@@ -100,6 +137,21 @@ export function FavoritesPage({
             <Typography variant="body2" color="text.secondary">
               {t('favorites.currentPain')}: {selectedPain || t('favorites.noPain')}
             </Typography>
+
+            {loadingSuggestions ? (
+              <Box sx={{ display: 'grid', placeItems: 'center', py: 3 }}>
+                <CircularProgress size={28} />
+              </Box>
+            ) : null}
+
+            {suggestionsError ? <Alert severity="info">{suggestionsError}</Alert> : null}
+
+            {!loadingSuggestions && !suggestionsError && suggestions.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('favorites.suggestionsEmpty')}
+              </Typography>
+            ) : null}
+
             {suggestions.map((shoe) => (
               <Stack key={`${shoe.brand}-${shoe.model}`} spacing={1}>
                 <ShoeCard shoe={shoe} isFavorite={false} showFavoriteButton={false} />
@@ -116,4 +168,3 @@ export function FavoritesPage({
     </>
   )
 }
-
