@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AuthProvider } from './auth/AuthContext'
+import { loadFavorites, saveFavorites } from './state/persist'
 import type { ShoeCardModel } from './components/ShoeCard'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { FavoritesPage } from './pages/FavoritesPage'
@@ -18,7 +19,7 @@ function AppShell() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [favorites, setFavorites] = useState<ShoeCardModel[]>([])
+  const [favorites, setFavorites] = useState<ShoeCardModel[]>(() => loadFavorites())
   const [uploadedShoes, setUploadedShoes] = useState<ShoeCardModel[]>([])
 
   const tab = useMemo(() => {
@@ -33,7 +34,9 @@ function AppShell() {
     setFavorites((prev) => {
       const key = `${shoe.brand}-${shoe.model}-${shoe.size}`
       const exists = prev.some((s) => `${s.brand}-${s.model}-${s.size}` === key)
-      return exists ? prev.filter((s) => `${s.brand}-${s.model}-${s.size}` !== key) : [...prev, shoe]
+      const next = exists ? prev.filter((s) => `${s.brand}-${s.model}-${s.size}` !== key) : [...prev, shoe]
+      saveFavorites(next)
+      return next
     })
   }
 
@@ -41,7 +44,9 @@ function AppShell() {
     setFavorites((prev) => {
       const key = `${shoe.brand}-${shoe.model}-${shoe.size}`
       const exists = prev.some((s) => `${s.brand}-${s.model}-${s.size}` === key)
-      return exists ? prev : [...prev, shoe]
+      const next = exists ? prev : [...prev, shoe]
+      saveFavorites(next)
+      return next
     })
   }
 

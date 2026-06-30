@@ -1,5 +1,6 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import LogoutIcon from '@mui/icons-material/Logout'
-import { AppBar, Button, Container, MenuItem, Paper, Stack, TextField, Toolbar, Typography } from '@mui/material'
+import { AppBar, Button, Container, IconButton, MenuItem, Paper, Stack, TextField, Toolbar, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { getLanguage, setLanguage } from '../i18n/i18n'
@@ -25,6 +26,9 @@ export function ProfilePage({ onReset }: { onReset: () => void }) {
     <>
       <AppBar position="sticky" color="transparent" elevation={0}>
         <Toolbar sx={{ gap: 1 }}>
+          <IconButton onClick={() => navigate('/')} aria-label={t('app.home')} edge="start">
+            <ArrowBackIcon />
+          </IconButton>
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 800 }}>
             {t('profile.title')}
           </Typography>

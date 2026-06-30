@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { authApi, setAuthToken, setOnUnauthorized } from '../api/client'
 import { clearAuthSession, loadAuthToken, loadStoredUser, saveAuthSession, type StoredUser } from './session'
-import { clearFitProfileId } from '../state/persist'
+import { clearFitProfileId, clearFavorites } from '../state/persist'
 
 type AuthContextValue = {
   user: StoredUser | null
@@ -32,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthToken(null)
     clearAuthSession()
     clearFitProfileId()
+    clearFavorites()
     setUser(null)
   }, [])
 
