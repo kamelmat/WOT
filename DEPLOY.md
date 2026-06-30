@@ -1,38 +1,91 @@
 # WOT — Deploy
 
-Frontend on **Vercel**, backend on **Koyeb** (or similar).
+Frontend on **Vercel**, backend on **Render**, database on **Neon**.
 
-## 1. Database
+## 1. Database (Neon)
 
-Create a managed Postgres instance (Neon free tier, Koyeb Postgres, etc.) and note `DB_URL`, `DB_USER`, `DB_PASSWORD`.
+1. Create a project at [console.neon.tech](https://console.neon.tech).
+2. **Connect** → copy the connection string.
+3. Map to Spring env vars:
 
-## 2. Backend (Koyeb)
+| Neon | Render env var |
+|------|----------------|
+| user (e.g. `neondb_owner`) | `DB_USER` |
+| password | `DB_PASSWORD` |
+| host + `/neondb` | `DB_URL` (see below) |
 
-1. New App → Docker → point at `app/` (uses `Dockerfile`).
-2. Set environment variables from `app/.env.example`:
-   - `SPRING_PROFILES_ACTIVE=prod`
-   - `DB_URL`, `DB_USER`, `DB_PASSWORD`
-   - `CORS_ALLOWED_ORIGINS` = your Vercel URL(s), comma-separated
-   - `WOT_UPLOAD_DIR=/tmp/wot-uploads`
-   - `WOT_JWT_SECRET` = random string, at least 32 characters
-3. Health check path: `/health/ready`
-4. Note the public URL (e.g. `https://wot-api-xxx.koyeb.app`).
+`DB_URL` format (add `jdbc:` prefix and port `5432`):
 
-## 3. Frontend (Vercel)
+```
+jdbc:postgresql://YOUR_HOST.neon.tech:5432/neondb?sslmode=require
+```
 
-1. Import repo, **Root Directory** = `frontend`.
-2. Set `VITE_API_BASE_URL` = Koyeb backend URL (no trailing slash).
-3. Deploy. `vercel.json` handles SPA routing and security headers.
+Use the **pooler** host from Neon (`-pooler` in the hostname) for Render.
 
-## 4. Wire CORS
+Flyway migrations run automatically on first backend start.
 
-After Vercel gives you a URL, update Koyeb `CORS_ALLOWED_ORIGINS` to match (include preview URL if needed).
+## 2. JWT secret
+
+Generate once (never commit):
+
+```bash
+openssl rand -base64 48
+```
+
+Set on Render as `WOT_JWT_SECRET` (min 32 characters).
+
+## 3. Backend (Render)
+
+### Option A — Fix existing service (fastest)
+
+In Render → your web service → **Settings**:
+
+| Setting | Value |
+|---------|-------|
+| **Root Directory** | `app` |
+| **Dockerfile Path** | `Dockerfile` |
+| **Health Check Path** | `/health/ready` |
+
+Save → **Manual Deploy** → **Deploy latest commit**.
+
+The error `open Dockerfile: no such file or directory` means Root Directory is blank — Render looks at repo root, but our Dockerfile is in `app/`.
+
+### Option B — New service from blueprint
+
+Repo includes `render.yaml`. Render → **New** → **Blueprint** → select repo.
+
+### Environment variables
+
+| Variable | Value |
+|----------|-------|
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+| `DB_URL` | `jdbc:postgresql://...neon.tech:5432/neondb?sslmode=require` |
+| `DB_USER` | `neondb_owner` |
+| `DB_PASSWORD` | *(from Neon)* |
+| `WOT_JWT_SECRET` | *(openssl output)* |
+| `WOT_JWT_EXPIRY_HOURS` | `168` |
+| `WOT_UPLOAD_DIR` | `/tmp/wot-uploads` |
+| `CORS_ALLOWED_ORIGINS` | `https://your-app.vercel.app` *(update after Vercel)* |
+
+5. Deploy and note the URL (e.g. `https://wot-api.onrender.com`).
+
+Render sets `PORT` automatically — `application-prod.yml` uses it.
+
+## 4. Frontend (Vercel)
+
+1. Import repo → **Root Directory** = `frontend`.
+2. Env var: `VITE_API_BASE_URL` = your Render URL (no trailing slash).
+3. Deploy.
+
+## 5. Wire CORS
+
+Update Render `CORS_ALLOWED_ORIGINS` to your exact Vercel URL(s), comma-separated for preview + production.
 
 ## Local dev
 
 ```bash
 # Terminal 1 — backend
-cd app && docker compose up    # or ./mvnw spring-boot:run with local Postgres
+cd app && docker compose up
 
 # Terminal 2 — frontend
 cd frontend && npm install && npm run dev

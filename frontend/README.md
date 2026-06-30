@@ -25,7 +25,7 @@ Dev server proxies `/api`, `/health`, `/uploads` to the backend (see `vite.confi
 ## Deploy (Vercel)
 
 1. Import repo, set **Root Directory** to `frontend`.
-2. Add env var `VITE_API_BASE_URL` = your Koyeb backend URL (e.g. `https://wot-api-xxx.koyeb.app`).
+2. Add env var `VITE_API_BASE_URL` = your Render backend URL (e.g. `https://wot-api.onrender.com`).
 3. Build: `npm run build` · Output: `dist` (handled by `vercel.json`).
 
 ## Backend wiring
