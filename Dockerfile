@@ -1,9 +1,10 @@
+# Builds the Spring Boot API from app/ — works when Render root is the repo root.
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-COPY mvnw pom.xml ./
-COPY .mvn .mvn
+COPY app/mvnw app/pom.xml ./
+COPY app/.mvn .mvn
 RUN chmod +x mvnw
-COPY src ./src
+COPY app/src ./src
 RUN ./mvnw -q -DskipTests package
 
 FROM eclipse-temurin:21-jre

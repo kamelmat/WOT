@@ -3,7 +3,6 @@ services:
   - type: web
     name: wot-api
     runtime: docker
-    rootDir: app
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health/ready
     envVars:

@@ -36,23 +36,20 @@ Set on Render as `WOT_JWT_SECRET` (min 32 characters).
 
 ## 3. Backend (Render)
 
-### Option A — Fix existing service (fastest)
+**Why Docker?** Render has no native Java runtime (unlike Node/Python). For Spring Boot, Docker is the standard path: Maven builds the `.jar`, Docker provides Java 21 + runs the jar. You are not "running Docker in production" manually — Render builds and hosts the container for you.
 
-In Render → your web service → **Settings**:
+### Render settings
 
 | Setting | Value |
 |---------|-------|
-| **Root Directory** | `app` |
+| **Root Directory** | *(leave blank — uses repo root)* |
+| **Runtime** | Docker |
 | **Dockerfile Path** | `Dockerfile` |
 | **Health Check Path** | `/health/ready` |
 
-Save → **Manual Deploy** → **Deploy latest commit**.
+Repo includes a root `Dockerfile` that builds `app/` automatically.
 
-The error `open Dockerfile: no such file or directory` means Root Directory is blank — Render looks at repo root, but our Dockerfile is in `app/`.
-
-### Option B — New service from blueprint
-
-Repo includes `render.yaml`. Render → **New** → **Blueprint** → select repo.
+If you previously set Root Directory to `app`, clear it and use the root `Dockerfile` instead.
 
 ### Environment variables
 
