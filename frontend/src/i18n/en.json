@@ -1,0 +1,93 @@
+{
+  "app": {
+    "title": "Wizard of Toes",
+    "home": "Home",
+    "favorites": "Favorites",
+    "profile": "Profile"
+  },
+  "auth": {
+    "loginSubtitle": "Sign in to save your fit profile and recommendations.",
+    "registerSubtitle": "Create an account to get started.",
+    "email": "Email",
+    "password": "Password",
+    "passwordHelp": "At least 8 characters",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "noAccount": "No account?",
+    "hasAccount": "Already have an account?",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "home": {
+    "hi": "Hi {{name}}",
+    "idealFit": "Your ideal fit: Length {{lengthCm}} cm, Width {{widthMm}} mm",
+    "adjustWidthFilters": "Adjust width filters",
+    "widthFiltersMvpNote": "Width filters are UI-only in this MVP.",
+    "addShoeToStartTitle": "Add a shoe to start",
+    "addShoeToStartBody": "Add a shoe you own and tell us how it fits. We’ll generate recommendations instantly.",
+    "addShoe": "Add shoe",
+    "recommendedShoes": "Recommended shoes",
+    "confidence": "Confidence: {{pct}}%",
+    "noRecommendations": "No recommendations yet.",
+    "addAnotherShoe": "Add another shoe"
+  },
+  "shoeCard": {
+    "imagePlaceholder": "Shoe image",
+    "size": "Size: {{size}}",
+    "fitScore": "Fit score: {{score}}",
+    "buy": "Buy",
+    "save": "Save",
+    "saved": "Saved",
+    "blurbPerfect": "Very comfortable for wider feet",
+    "blurbLoose": "Great if you wear orthotics",
+    "blurbTight": "Snug for narrower profiles"
+  },
+  "addShoeDialog": {
+    "title": "Add a shoe you own",
+    "userId": "User ID",
+    "brand": "Brand",
+    "model": "Model",
+    "size": "Size",
+    "sizeHelp": "Example: \"EU 42\"",
+    "fitFeedback": "Fit feedback",
+    "liked": "What did you like about this shoe? (optional)",
+    "uploadPhoto": "Add shoe photo (optional)",
+    "cancel": "Cancel",
+    "saveContinue": "Save & continue"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "No saved shoes yet.",
+    "remove": "Remove from favorites",
+    "suggestionsButton": "Other users also liked",
+    "suggestionsTitle": "Suggestions for similar pain",
+    "suggestionsSubtitle": "Ranked by how many users with similar pain selected each shoe.",
+    "currentShoe": "Selected shoe",
+    "currentPain": "Your pain profile",
+    "noPain": "No pain description yet",
+    "socialRank": "{{count}} matching social signals"
+  },
+  "profile": {
+    "title": "My profile",
+    "yourInfo": "Your info",
+    "name": "Name",
+    "lengthCm": "Foot length (cm)",
+    "widthMm": "Foot width (mm)",
+    "painLabel": "Pain / discomfort",
+    "painPlaceholder": "e.g. My right foot is too wide, bunion on the left…",
+    "save": "Save",
+    "edit": "Edit",
+    "cancelEdit": "Cancel",
+    "fitProfileIdLabel": "Fit profile id",
+    "accountLabel": "Signed in as",
+    "signOutTitle": "Sign out",
+    "signOutBody": "End your session on this device.",
+    "signOut": "Sign out",
+    "resetTitle": "Reset",
+    "resetBody": "Clears your local Fit Profile ID (useful for testing onboarding again).",
+    "clearFitProfile": "Clear Fit Profile",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Español"
+  }
+}
+

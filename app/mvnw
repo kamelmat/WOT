@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Apache Maven Wrapper startup script
+
+set -euf
+
+BASE_DIR=$(cd "$(dirname "$0")" && pwd)
+
+WRAPPER_DIR="$BASE_DIR/.mvn/wrapper"
+WRAPPER_JAR="$WRAPPER_DIR/maven-wrapper.jar"
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  if command -v javac >/dev/null 2>&1; then
+    (cd "$BASE_DIR" && javac "$WRAPPER_DIR/MavenWrapperDownloader.java" && java -cp "$WRAPPER_DIR" MavenWrapperDownloader "$BASE_DIR")
+  else
+    echo "javac not found; cannot bootstrap Maven Wrapper" >&2
+    exit 1
+  fi
+fi
+
+exec java \
+  -classpath "$WRAPPER_JAR" \
+  -Dmaven.multiModuleProjectDirectory="$BASE_DIR" \
+  org.apache.maven.wrapper.MavenWrapperMain "$@"
+

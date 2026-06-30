@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: WOT Fit Service API
+  version: 1.0.0
+  description: Fit-based shoe recommendation service for Wizard of Toes (WOT).
+servers:
+  - url: http://localhost:8080
+    description: local
+  - url: http://fit-service:8080
+    description: docker
+paths:
+  /api/v1/fit/add-shoe:
+    post:
+      summary: Add owned shoe
+      description: Records an owned shoe and updates/creates a Fit Profile.
+      parameters:
+        - $ref: "#/components/parameters/XTraceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddShoeRequest"
+            example:
+              userId: USER123
+              brand: Nike
+              model: Pegasus 40
+              size: EU 42
+              fitFeedback: PERFECT
+      responses:
+        "200":
+          description: Fit recorded
+          headers:
+            X-Trace-Id:
+              $ref: "#/components/headers/XTraceId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddShoeResponse"
+              example:
+                status: FIT_RECORDED
+                fitProfileId: FPABCDEF1234
+                confidence: 0.3000
+                timestamp: "2026-04-07T10:00:00Z"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/v1/fit/validate:
+    post:
+      summary: Validate fit profile
+      description: Recomputes confidence/profile state from recorded shoes.
+      parameters:
+        - $ref: "#/components/parameters/XTraceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateFitRequest"
+            example:
+              fitProfileId: FPABCDEF1234
+      responses:
+        "200":
+          description: Validated
+          headers:
+            X-Trace-Id:
+              $ref: "#/components/headers/XTraceId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateFitResponse"
+              example:
+                status: VALIDATED
+                fitProfileId: FPABCDEF1234
+                confidence: 0.6500
+                profileState: LOW_CONFIDENCE
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/v1/fit/recommendations:
+    get:
+      summary: Get recommendations
+      description: Returns recommendations for a fit profile.
+      parameters:
+        - $ref: "#/components/parameters/XTraceId"
+        - name: fitProfileId
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 64
+          example: FPABCDEF1234
+      responses:
+        "200":
+          description: Recommendations
+          headers:
+            X-Trace-Id:
+              $ref: "#/components/headers/XTraceId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationsResponse"
+              example:
+                recommendations:
+                  - brand: New Balance
+                    model: 1080v13
+                    size: EU 42
+                    fitScore: 92
+                    fitLabel: PERFECT
+                  - brand: ASICS
+                    model: Nimbus 26
+                    size: EU 42.5
+                    fitScore: 85
+                    fitLabel: SLIGHTLY_LOOSE
+                confidence: 0.6500
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /health:
+    get:
+      summary: Health (live)
+      responses:
+        "200":
+          description: Live
+
+  /health/live:
+    get:
+      summary: Liveness probe
+      responses:
+        "200":
+          description: Live
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      responses:
+        "200":
+          description: Ready
+
+  /v1/fit/health:
+    get:
+      summary: Versioned health
+      responses:
+        "200":
+          description: Ready
+
+components:
+  parameters:
+    XTraceId:
+      name: X-Trace-Id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Optional trace/correlation id. If omitted, server generates one.
+  headers:
+    XTraceId:
+      description: Trace/correlation id for request/response linkage.
+      schema:
+        type: string
+  responses:
+    ValidationError:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+          example:
+            errorCode: VALIDATION_ERROR
+            message: Invalid request
+            timestamp: "2026-04-07T10:00:00Z"
+            traceId: 3f9c0f2e-2e8a-4c28-8d29-2d4d6cdb0b1e
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+          example:
+            errorCode: FIT_PROFILE_NOT_FOUND
+            message: Fit profile not found
+            timestamp: "2026-04-07T10:00:00Z"
+            traceId: 3f9c0f2e-2e8a-4c28-8d29-2d4d6cdb0b1e
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+          example:
+            errorCode: INTERNAL_ERROR
+            message: Unable to process request
+            timestamp: "2026-04-07T10:00:00Z"
+            traceId: 3f9c0f2e-2e8a-4c28-8d29-2d4d6cdb0b1e
+  schemas:
+    FitFeedback:
+      type: string
+      enum: [TIGHT, PERFECT, LOOSE]
+    AddShoeRequest:
+      type: object
+      required: [userId, brand, model, size, fitFeedback]
+      properties:
+        userId:
+          type: string
+          maxLength: 64
+        brand:
+          type: string
+          maxLength: 128
+        model:
+          type: string
+          maxLength: 128
+        size:
+          type: string
+          maxLength: 32
+        fitFeedback:
+          $ref: "#/components/schemas/FitFeedback"
+    AddShoeResponse:
+      type: object
+      required: [status, fitProfileId, confidence, timestamp]
+      properties:
+        status:
+          type: string
+          example: FIT_RECORDED
+        fitProfileId:
+          type: string
+        confidence:
+          type: number
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+    ValidateFitRequest:
+      type: object
+      required: [fitProfileId]
+      properties:
+        fitProfileId:
+          type: string
+          maxLength: 64
+    ValidateFitResponse:
+      type: object
+      required: [status, fitProfileId, confidence, profileState]
+      properties:
+        status:
+          type: string
+          example: VALIDATED
+        fitProfileId:
+          type: string
+        confidence:
+          type: number
+          format: double
+        profileState:
+          type: string
+          enum: [LOW_CONFIDENCE, VALIDATED]
+    Recommendation:
+      type: object
+      required: [brand, model, size, fitScore, fitLabel]
+      properties:
+        brand:
+          type: string
+        model:
+          type: string
+        size:
+          type: string
+        fitScore:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+        fitLabel:
+          type: string
+    RecommendationsResponse:
+      type: object
+      required: [recommendations, confidence]
+      properties:
+        recommendations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Recommendation"
+        confidence:
+          type: number
+          format: double
+    ApiError:
+      type: object
+      required: [errorCode, message, timestamp, traceId]
+      properties:
+        errorCode:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        traceId:
+          type: string
+

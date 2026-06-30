@@ -1,0 +1,93 @@
+{
+  "app": {
+    "title": "Wizard of Toes",
+    "home": "Inicio",
+    "favorites": "Favoritos",
+    "profile": "Mi perfil"
+  },
+  "auth": {
+    "loginSubtitle": "Inicia sesión para guardar tu perfil y recomendaciones.",
+    "registerSubtitle": "Crea una cuenta para empezar.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordHelp": "Mínimo 8 caracteres",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "genericError": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "home": {
+    "hi": "Hola {{name}}",
+    "idealFit": "Tu calce ideal: Largo {{lengthCm}} cm, Ancho {{widthMm}} mm",
+    "adjustWidthFilters": "Ajustar filtros de ancho",
+    "widthFiltersMvpNote": "Los filtros de ancho son solo de UI en este MVP.",
+    "addShoeToStartTitle": "Agrega un zapato para empezar",
+    "addShoeToStartBody": "Agrega un zapato que ya usas y dinos cómo te queda. Generaremos recomendaciones al instante.",
+    "addShoe": "Agregar zapato",
+    "recommendedShoes": "Zapatillas recomendadas",
+    "confidence": "Confianza: {{pct}}%",
+    "noRecommendations": "Aún no hay recomendaciones.",
+    "addAnotherShoe": "Agregar otro zapato"
+  },
+  "shoeCard": {
+    "imagePlaceholder": "Imagen del zapato",
+    "size": "Talla: {{size}}",
+    "fitScore": "Puntaje: {{score}}",
+    "buy": "Comprar",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "blurbPerfect": "Muy cómodas para pies anchos",
+    "blurbLoose": "Ideal si usas plantillas",
+    "blurbTight": "Ajustadas para perfiles más angostos"
+  },
+  "addShoeDialog": {
+    "title": "Agrega un zapato que tienes",
+    "userId": "ID de usuario",
+    "brand": "Marca",
+    "model": "Modelo",
+    "size": "Talla",
+    "sizeHelp": "Ejemplo: \"EU 42\"",
+    "fitFeedback": "Sensación de calce",
+    "liked": "¿Qué te gustó de este zapato? (opcional)",
+    "uploadPhoto": "Agregar foto del zapato (opcional)",
+    "cancel": "Cancelar",
+    "saveContinue": "Guardar y continuar"
+  },
+  "favorites": {
+    "title": "Favoritos",
+    "empty": "Aún no tienes zapatos guardados.",
+    "remove": "Quitar de favoritos",
+    "suggestionsButton": "Otros usuarios también eligieron",
+    "suggestionsTitle": "Sugerencias por dolor similar",
+    "suggestionsSubtitle": "Ranking según cuántos usuarios con dolor similar eligieron cada zapato.",
+    "currentShoe": "Zapato seleccionado",
+    "currentPain": "Tu perfil de dolor",
+    "noPain": "Sin descripción de dolor",
+    "socialRank": "{{count}} señales sociales coincidentes"
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "yourInfo": "Tu información",
+    "name": "Nombre",
+    "lengthCm": "Largo del pie (cm)",
+    "widthMm": "Ancho del pie (mm)",
+    "painLabel": "Dolor / molestia",
+    "painPlaceholder": "ej: Mi pie derecho es demasiado ancho, juanete en el izquierdo…",
+    "save": "Guardar",
+    "edit": "Editar",
+    "cancelEdit": "Cancelar",
+    "fitProfileIdLabel": "ID de perfil de calce",
+    "accountLabel": "Sesión iniciada como",
+    "signOutTitle": "Cerrar sesión",
+    "signOutBody": "Termina tu sesión en este dispositivo.",
+    "signOut": "Cerrar sesión",
+    "resetTitle": "Reiniciar",
+    "resetBody": "Borra tu Fit Profile ID local (útil para volver a probar el onboarding).",
+    "clearFitProfile": "Borrar Fit Profile",
+    "language": "Idioma",
+    "english": "English",
+    "spanish": "Español"
+  }
+}
+
